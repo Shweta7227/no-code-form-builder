@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>No-Code Form Builder - Admin</title>
+</head>
+<body>
+  <h2>Create a New Form</h2>
+  
+  <input id="title" placeholder="Form Title"><br><br>
+  <textarea id="fields" placeholder="Fields (comma separated)"></textarea><br><br>
+  <button onclick="createForm()">Create Form</button>
+
+  <script>
+    function createForm() {
+      const form = {
+        title: document.getElementById("title").value,
+        fields: document.getElementById("fields").value.split(",")
+      };
+
+      fetch("http://localhost:3000/create-form", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form)
+      })
+      .then(() => alert("Form Created Successfully"));
+    }
+  </script>
+</body>
+</html>

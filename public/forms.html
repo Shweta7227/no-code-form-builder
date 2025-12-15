@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fill Forms</title>
+</head>
+<body>
+  <h2>Available Forms</h2>
+  <div id="forms"></div>
+
+  <script>
+    fetch("http://localhost:3000/forms")
+      .then(res => res.json())
+      .then(forms => {
+        forms.forEach((form, index) => {
+          let html = `<h3>${form.title}</h3>`;
+          form.fields.forEach((f, i) => {
+            html += `<input placeholder="${f}" id="f${index}_${i}"><br>`;
+          });
+          html += `<button onclick="submitForm(${index})">Submit</button><hr>`;
+          document.getElementById("forms").innerHTML += html;
+        });
+      });
+
+    function submitForm(formIndex) {
+      fetch("http://localhost:3000/forms")
+        .then(res => res.json())
+        .then(forms => {
+          const form = forms[formIndex];
+          const response = { title: form.title, answers: [] };
+          form.fields.forEach((f, i) => {
+            const answer = document.getElementById(`f${formIndex}_${i}`).value;
+            response.answers.push({ field: f, answer });
+          });
+
+          fetch("http://localhost:3000/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(response)
+          }).then(() => alert("Response submitted!"));
+        });
+    }
+  </script>
+</body>
+</html>
